@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime
 import re
+import textwrap
 
 class TaskTracker(cmd.Cmd):
     prompt = 'task-cli '
@@ -72,6 +73,21 @@ class TaskTracker(cmd.Cmd):
                 break
         return tasks
     
+    def validate_list_arg(self, status):
+        return status in self.status or status == ''
+        
+    def get_tasks_by_status(self, status):
+        tasks = self.get_tasks()
+        match status:
+            case 'todo':
+                return list(filter(lambda t: t['status'] == 'todo', tasks))
+            case 'in-progress':
+                return list(filter(lambda t: t['status'] == 'in-progress', tasks))
+            case 'done':
+                return list(filter(lambda t: t['status'] == 'done', tasks))
+            case _:
+                return tasks
+        
     def do_update(self, arg):
         id, desc = self.extract_update_info(arg)
         if id == None or desc == None:
@@ -123,6 +139,30 @@ class TaskTracker(cmd.Cmd):
         updated_tasks = self.set_status(id, self.status[2])
         self.save_tasks(updated_tasks)
         print(f"Task marked done (ID: {id})")
+
+    def do_list(self, arg):
+        cmd = arg.strip()
+        valid_input = self.validate_list_arg(cmd)
+        if valid_input == False:
+            print('Please Enter valid list command')
+            return
+        tasks = self.get_tasks_by_status(cmd)
+        if len(tasks) == 0:
+            print('No tasks to list')
+            return
+        for task in tasks:
+            id = task['id']
+            desc = task['description']
+            status = task['status']
+            createdAt = datetime.fromisoformat(task['createdAt']).strftime("%d %b %Y, %I:%M %p")
+            updatedAt = datetime.fromisoformat(task['updatedAt']).strftime("%d %b %Y, %I:%M %p")
+            print(textwrap.dedent(f"""
+                ID: {id}
+                DESCRIPTION: {desc}
+                STATUS: {status}
+                CREATED AT: {createdAt}
+                UPDATED AT: {updatedAt}
+            """))
 
     def do_add(self, arg):
         desc = arg.strip()

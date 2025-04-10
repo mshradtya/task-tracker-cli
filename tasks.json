@@ -6,6 +6,13 @@
             "status": "done",
             "createdAt": "2025-04-09T17:26:10.739689",
             "updatedAt": "2025-04-10T12:48:35.910889"
+        },
+        {
+            "id": 3,
+            "description": "Clean your room",
+            "status": "in-progress",
+            "createdAt": "2025-04-10T14:22:29.329892",
+            "updatedAt": "2025-04-10T14:24:30.937178"
         }
     ]
 }

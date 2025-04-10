@@ -1,6 +1,7 @@
 # Task Tracker CLI
 
-A simple command-line task tracker built with Python. 1/22 project of roadmap.sh/backend.
+A simple command-line task tracker built with Python.
+📌 This project is part of the [Task Tracker CLI challenge on roadmap.sh](https://roadmap.sh/projects/task-tracker)
 
 ## Features
 

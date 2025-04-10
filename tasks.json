@@ -1,18 +1,11 @@
 {
-    "tasks": [
-        {
-            "id": 1,
-            "description": "FINISH HIM",
-            "status": "todo",
-            "createdAt": "2025-04-09T17:25:38.034240",
-            "updatedAt": "2025-04-10T11:47:17.378716"
-        },
-        {
-            "id": 2,
-            "description": "implement add task",
-            "status": "todo",
-            "createdAt": "2025-04-09T17:26:10.739689",
-            "updatedAt": "2025-04-09T17:26:10.739689"
-        }
-    ]
+  "tasks": [
+    {
+      "id": 2,
+      "description": "implement add task",
+      "status": "todo",
+      "createdAt": "2025-04-09T17:26:10.739689",
+      "updatedAt": "2025-04-09T17:26:10.739689"
+    }
+  ]
 }

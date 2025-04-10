@@ -28,6 +28,12 @@ class TaskTracker(cmd.Cmd):
     
     def get_next_id(self, tasks):
         return max([task["id"] for task in tasks], default=0) + 1
+    
+    def to_int(self, id):
+        try:
+            return int(id.strip())
+        except:
+            return None
 
     def save_tasks(self, tasks):
         with open(self.file_name, 'w') as f:
@@ -51,6 +57,11 @@ class TaskTracker(cmd.Cmd):
                 break
         return tasks
     
+    def delete_task(self, id):
+        tasks = self.get_tasks()
+        updated = list(filter(lambda t: t['id'] != id, tasks))
+        return updated
+    
     def do_update(self, arg):
         id, desc = self.extract_update_info(arg)
         if id == None or desc == None:
@@ -63,6 +74,19 @@ class TaskTracker(cmd.Cmd):
         updated_tasks = self.update_task(id, desc)
         self.save_tasks(updated_tasks)
         print(f"Task updated (ID: {id})")
+
+    def do_delete(self, arg):
+        id = self.to_int(arg)
+        if id is None:
+            print('Enter valid task ID')
+            return
+        task = self.get_task(id)
+        if task == None:
+            print(f"Task with ID {id} doesn't exist")
+            return
+        updated_tasks = self.delete_task(id)
+        self.save_tasks(updated_tasks)
+        print(f"Task deleted (ID: {id})")
 
     def do_add(self, arg):
         desc = arg.strip()

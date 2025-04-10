@@ -2,6 +2,7 @@ import cmd
 import json
 import os
 from datetime import datetime
+import re
 
 class TaskTracker(cmd.Cmd):
     prompt = 'task-cli '
@@ -18,15 +19,50 @@ class TaskTracker(cmd.Cmd):
         except json.JSONDecodeError:
             return []
         
+    def get_task(self, id):
+        tasks = self.get_tasks()
+        task = list(filter(lambda x: x['id'] == id, tasks))
+        if len(task) == 0:
+            return None
+        return task[0]
+    
     def get_next_id(self, tasks):
         return max([task["id"] for task in tasks], default=0) + 1
 
     def save_tasks(self, tasks):
         with open(self.file_name, 'w') as f:
             json.dump({"tasks": tasks}, f, indent=4)
-
-    def get_next_id(self, tasks):
-        return max([task["id"] for task in tasks], default=0) + 1
+        
+    def extract_update_info(self, s):
+        match = re.match(r'^\s*(\d+)\s+(.*)', s)
+        if match:
+            id = int(match.group(1))
+            desc = match.group(2).strip()
+            return id, desc
+        return None, None
+    
+    def update_task(self, id, desc):
+        tasks = self.get_tasks()
+        timestamp = datetime.now().isoformat()
+        for t in tasks:
+            if t['id'] == id:
+                t['description'] = desc
+                t['updatedAt'] = timestamp
+                break
+        return tasks
+    
+    def do_update(self, arg):
+        id, desc = self.extract_update_info(arg)
+        if id == None or desc == None:
+            print('Enter valid ID and description')
+            return
+        task = self.get_task(id)
+        if task == None:
+            print(f"Task with ID {id} doesn't exist")
+            return
+        updated_tasks = self.update_task(id, desc)
+        self.save_tasks(updated_tasks)
+        print(f"Task updated (ID: {id})")
 
     def do_add(self, arg):
         desc = arg.strip()
@@ -49,6 +85,9 @@ class TaskTracker(cmd.Cmd):
         tasks.append(task)
         self.save_tasks(tasks)
         print(f"Task added (ID: {task_id})")
+
+    def do_quit(self, arg):
+        return True
 
 if __name__ == '__main__':
     TaskTracker().cmdloop()

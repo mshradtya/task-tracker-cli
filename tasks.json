@@ -1,11 +1,11 @@
 {
-  "tasks": [
-    {
-      "id": 2,
-      "description": "implement add task",
-      "status": "todo",
-      "createdAt": "2025-04-09T17:26:10.739689",
-      "updatedAt": "2025-04-09T17:26:10.739689"
-    }
-  ]
+    "tasks": [
+        {
+            "id": 2,
+            "description": "implement add task",
+            "status": "done",
+            "createdAt": "2025-04-09T17:26:10.739689",
+            "updatedAt": "2025-04-10T12:48:35.910889"
+        }
+    ]
 }

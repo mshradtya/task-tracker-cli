@@ -62,6 +62,16 @@ class TaskTracker(cmd.Cmd):
         updated = list(filter(lambda t: t['id'] != id, tasks))
         return updated
     
+    def set_status(self, id, status):
+        tasks = self.get_tasks()
+        timestamp = datetime.now().isoformat()
+        for t in tasks:
+            if t['id'] == id:
+                t['status'] = status
+                t['updatedAt'] = timestamp
+                break
+        return tasks
+    
     def do_update(self, arg):
         id, desc = self.extract_update_info(arg)
         if id == None or desc == None:
@@ -87,6 +97,32 @@ class TaskTracker(cmd.Cmd):
         updated_tasks = self.delete_task(id)
         self.save_tasks(updated_tasks)
         print(f"Task deleted (ID: {id})")
+
+    def do_progress(self, arg):
+        id = self.to_int(arg)
+        if id is None:
+            print('Enter valid task ID')
+            return
+        task = self.get_task(id)
+        if task == None:
+            print(f"Task with ID {id} doesn't exist")
+            return
+        updated_tasks = self.set_status(id, self.status[1])
+        self.save_tasks(updated_tasks)
+        print(f"Task marked in progress (ID: {id})")
+
+    def do_done(self, arg):
+        id = self.to_int(arg)
+        if id is None:
+            print('Enter valid task ID')
+            return
+        task = self.get_task(id)
+        if task == None:
+            print(f"Task with ID {id} doesn't exist")
+            return
+        updated_tasks = self.set_status(id, self.status[2])
+        self.save_tasks(updated_tasks)
+        print(f"Task marked done (ID: {id})")
 
     def do_add(self, arg):
         desc = arg.strip()
